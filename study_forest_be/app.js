@@ -98,25 +98,24 @@ app.get(
     const { id } = req.params;
     const study = await prisma.study.findMany({
       where: { id },
-      select: {
-        nickName: true,
-        studyName: true,
-        description: true,
-        point: true,
-        createdAt: true,
-        updatesdAt: true,
-      },
     });
     res.send(study);
   })
 );
 
 //스터디 정보 수정
-
 app.patch(
   "/study/:id",
   asyncHandler(async (req, res) => {
     const { id } = req.params;
-    
+    assert(req.body, PatchStudy);
+
+    const study = await prisma.study.update({
+      where: { id },
+      data: req.body,
+    });
+
+    res.send(study);
   })
 );
+
