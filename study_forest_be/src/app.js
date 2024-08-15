@@ -5,6 +5,7 @@ import asyncHandler from "./utils/asyncErrorHandler";
 import { assert } from "superstruct";
 import { CreateStudy } from "./structs/study/CreateStudy";
 import { PatchStudy } from "./structs/study/PatchStudy";
+import { CreateHabit } from "./structs/habit/CreateHabit";
 import { PatchHabit } from "./structs/habit/PatchHabit";
 import { DeleteHabit } from "./structs/habit/DeleteHabit";
 import weekdateHandler from "./utils/weekDateHandler";
@@ -17,6 +18,19 @@ const prisma = new PrismaClient();
 
 const app = new express();
 app.use(express.json());
+
+// 스터디 생성
+app.post(
+  "/study",
+  asyncHandler(async (req, res) => {
+    assert(req.body, CreateStudy);
+    const study = await prisma.study.create({
+      data: req.body,
+    });
+
+    res.status(201).send(study);
+  })
+);
 
 // 스터디 목록 조회
 app.get(
@@ -62,19 +76,6 @@ app.get(
   })
 );
 
-// 스터디 생성
-app.post(
-  "/study",
-  asyncHandler(async (req, res) => {
-    assert(req.body, CreateStudy);
-    const study = await prisma.study.create({
-      data: req.body,
-    });
-
-    res.status(201).send(study);
-  })
-);
-
 // 스터디 상세 조회
 app.get(
   "/study/:id",
@@ -100,6 +101,19 @@ app.patch(
     });
 
     res.send(study);
+  })
+);
+
+// 습관 생성
+app.post(
+  "/study/:id/habit",
+  asyncHandler(async (req, res) => {
+    assert(req.body, CreateHabit);
+    const habit = await prisma.habit.create({
+      data: req.body,
+    });
+
+    res.status(201).send(habit);
   })
 );
 
