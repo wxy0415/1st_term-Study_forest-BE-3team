@@ -80,7 +80,7 @@ app.get(
   "/study/:id",
   asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const study = await prisma.study.findMany({
+    const study = await prisma.study.findUniqueOrThrow({
       where: { id },
     });
     res.send(study);
@@ -202,6 +202,23 @@ app.post(
     });
 
     res.status(201).send(success);
+  })
+);
+
+//완료한 습관 삭제
+app.delete(
+  "/success/:id",
+  asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const success = await prisma.habitSuccessed.delete({
+      where: { id },
+      select: {
+        id: true,
+        habitId: true,
+      },
+    });
+
+    res.status(200).send(success);
   })
 );
 
