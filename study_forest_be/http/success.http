@@ -1,1 +1,4 @@
 POST http://localhost:3000/habit/5a4850ef-0a81-48a2-bfe0-7141f075c5c2/success
+
+###
+DELETE http://localhost:3000/success/a67588b1-1bb8-49d9-8daa-f147cd3af074
