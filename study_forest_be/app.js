@@ -25,6 +25,15 @@ app.post(
     assert(req.body, CreateStudy);
     const study = await prisma.study.create({
       data: req.body,
+      select: {
+        id: true,
+        nickname: true,
+        studyName: true,
+        description: true,
+        background: true,
+        point: true,
+        createdAt: true,
+      },
     });
 
     res.status(201).send(study);
@@ -69,6 +78,15 @@ app.get(
           { description: { contains: keyWord } },
         ],
       },
+      select: {
+        id: true,
+        nickname: true,
+        studyName: true,
+        description: true,
+        background: true,
+        point: true,
+        createdAt: true,
+      },
     });
 
     res.send(studys);
@@ -82,12 +100,21 @@ app.get(
     const { id } = req.params;
     const study = await prisma.study.findUniqueOrThrow({
       where: { id },
+      select: {
+        id: true,
+        nickname: true,
+        studyName: true,
+        description: true,
+        background: true,
+        point: true,
+        createdAt: true,
+      },
     });
     res.send(study);
   })
 );
 
-// 스터디 정보 수정
+// 상세 스터디 수정
 app.patch(
   "/study/:id",
   asyncHandler(async (req, res) => {
@@ -97,6 +124,15 @@ app.patch(
     const study = await prisma.study.update({
       where: { id },
       data: req.body,
+      select: {
+        id: true,
+        nickname: true,
+        studyName: true,
+        description: true,
+        background: true,
+        point: true,
+        createdAt: true,
+      },
     });
 
     res.send(study);
