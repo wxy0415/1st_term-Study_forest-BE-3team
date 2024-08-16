@@ -27,7 +27,7 @@ app.post(
       data: req.body,
       select: {
         id: true,
-        nickname: true,
+        nickName: true,
         studyName: true,
         description: true,
         background: true,
@@ -80,7 +80,7 @@ app.get(
       },
       select: {
         id: true,
-        nickname: true,
+        nickName: true,
         studyName: true,
         description: true,
         background: true,
@@ -102,7 +102,7 @@ app.get(
       where: { id },
       select: {
         id: true,
-        nickname: true,
+        nickName: true,
         studyName: true,
         description: true,
         background: true,
@@ -126,7 +126,7 @@ app.patch(
       data: req.body,
       select: {
         id: true,
-        nickname: true,
+        nickName: true,
         studyName: true,
         description: true,
         background: true,
@@ -136,6 +136,20 @@ app.patch(
     });
 
     res.send(study);
+  })
+);
+
+//상세 스터디 삭제
+app.delete(
+  "/study/:id",
+  asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const study = await prisma.study.delete({
+      where: { id },
+      select: { id: true },
+    });
+
+    res.status(200).send(study);
   })
 );
 
@@ -257,6 +271,8 @@ app.delete(
     res.status(200).send(success);
   })
 );
+
+//
 
 // 습관 조회
 // app.get(

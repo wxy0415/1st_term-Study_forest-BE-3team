@@ -1,17 +1,17 @@
-GET  http://localhost:3000/study/
+GET  http://localhost:3000/study
 
 ###
-GET  http://localhost:3000/study/?order=oldest
+GET  http://localhost:3000/study/?page=2
 
 ###
-GET  http://localhost:3000/study/9cf0cb9b-1ba6-49df-bfa8-1348825e3c5f
+GET  http://localhost:3000/study/a1818234-753d-4eb2-a4f9-e709afb0c322
 
 ###
 POST   http://localhost:3000/study
 Content-Type: application/json
 
 {
-    "nickName": "dkssud",
+    "nickName": "dggsfsd",
     "studyName": "개발 공부하기",
     "description": "",
     "background": "356",
@@ -19,16 +19,15 @@ Content-Type: application/json
 }
 
 ###
-PATCH   http://localhost:3000/study/9cf0cb9b-1ba6-49df-bfa8-1348825e3c5f
+PATCH   http://localhost:3000/study/ee77246d-dae1-4a95-aad3-188a9d42b482
 Content-Type: application/json
 
 {
-    "nickName": "안녕",
+    "nickName": "545",
     "studyName": "테스트",
     "description": "",
-    "background": "356",
-    "password": "12345678",
     "point": 10
 }
 
 ###
+DELETE  http://localhost:3000/study/ee77246d-dae1-4a95-aad3-188a9d42b482
