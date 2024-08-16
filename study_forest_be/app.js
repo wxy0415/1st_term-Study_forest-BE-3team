@@ -93,7 +93,7 @@ app.get(
   })
 );
 
-// 스터디 상세 조회
+// 상세 스터디 조회
 app.get(
   "/study/:id",
   asyncHandler(async (req, res) => {
