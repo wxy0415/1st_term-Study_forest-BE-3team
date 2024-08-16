@@ -1,0 +1,34 @@
+GET  http://localhost:3000/study/
+
+###
+GET  http://localhost:3000/study/?order=oldest
+
+###
+GET  http://localhost:3000/study/9cf0cb9b-1ba6-49df-bfa8-1348825e3c5f
+
+###
+POST   http://localhost:3000/study
+Content-Type: application/json
+
+{
+    "nickName": "dkssud",
+    "studyName": "개발 공부하기",
+    "description": "",
+    "background": "356",
+    "password": "12345678"
+}
+
+###
+PATCH   http://localhost:3000/study/9cf0cb9b-1ba6-49df-bfa8-1348825e3c5f
+Content-Type: application/json
+
+{
+    "nickName": "안녕",
+    "studyName": "테스트",
+    "description": "",
+    "background": "356",
+    "password": "12345678",
+    "point": 10
+}
+
+###
