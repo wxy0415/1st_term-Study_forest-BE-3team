@@ -1,18 +1,17 @@
 import { PrismaClient } from "@prisma/client";
 import * as dotenv from "dotenv";
-import express from "express";
-import asyncHandler from "./utils/asyncErrorHandler";
-import { assert } from "superstruct";
-import { CreateStudy } from "./structs/study/CreateStudy";
-import { PatchStudy } from "./structs/study/PatchStudy";
-import { CreateHabit } from "./structs/habit/CreateHabit";
-import { PatchHabit } from "./structs/habit/PatchHabit";
-import { DeleteHabit } from "./structs/habit/DeleteHabit";
-import weekdateHandler from "./utils/weekDateHandler";
-import habitSuccessesFunction from "./utils/habitSuccessesFunction";
-import successedBoolin from "./utils/successedBoolin";
-
 dotenv.config;
+import express from "express";
+import asyncHandler from "./src/utils/asyncErrorHandler.js";
+import { assert } from "superstruct";
+import { CreateStudy } from "./src/structs/study/CreateStudy.js";
+import { PatchStudy } from "./src/structs/study/PatchStudy.js";
+import { CreateHabit } from "./src/structs/habit/CreateHabit.js";
+import { PatchHabit } from "./src/structs/habit/PatchHabit.js";
+
+// import weekdateHandler from "./src/utils/weekDateHandler.js";
+// import habitSuccessesFunction from "./src/utils/habitSuccessesFunction.js";
+// import successedBoolin from "./src/utils/successedBoolin.js";
 
 const prisma = new PrismaClient();
 
@@ -111,6 +110,13 @@ app.post(
     assert(req.body, CreateHabit);
     const habit = await prisma.habit.create({
       data: req.body,
+      select: {
+        id: true,
+        name: true,
+        deleted: true,
+        studyId: true,
+        createdAt: true,
+      },
     });
 
     res.status(201).send(habit);
@@ -127,6 +133,12 @@ app.patch(
     const habit = await prisma.habit.update({
       where: { id },
       data: req.body,
+      select: {
+        id: true,
+        name: true,
+        deleted: true,
+        createdAt: true,
+      },
     });
 
     res.send(habit);
@@ -138,14 +150,58 @@ app.patch(
   "/habit/:id/delete",
   asyncHandler(async (req, res) => {
     const { id } = req.params;
-    assert(req.body, DeleteHabit);
 
     const habit = await prisma.habit.update({
       where: { id },
-      data: req.body,
+      data: { deleted: false },
+      select: { id: true },
     });
 
     res.send(habit);
+  })
+);
+
+//습관 리스트 조회
+app.get(
+  "/study/:id/habitList",
+  asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    const habits = await prisma.habit.findMany({
+      where: {
+        studyId: id,
+        deleted: false,
+      },
+      orderBy: { createdAt: "asc" },
+      select: {
+        id: true,
+        name: true,
+        deleted: true,
+        studyId: true,
+        createdAt: true,
+      },
+    });
+
+    res.send(habits);
+  })
+);
+
+//완료한 습관 추가
+app.post(
+  "/habit/:id/success",
+  asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    const success = await prisma.habitSuccessed.create({
+      data: { habitId: id },
+      select: {
+        id: true,
+        createdAt: true,
+        habitId: true,
+      },
+    });
+
+    res.status(201).send(success);
   })
 );
 
@@ -193,3 +249,5 @@ app.patch(
 //     res.send(habits);
 //   })
 // );
+
+app.listen(process.env.PORT || 3000, () => console.log("Sever Started"));

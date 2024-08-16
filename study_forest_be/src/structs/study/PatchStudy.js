@@ -1,7 +1,7 @@
 import * as s from "superstruct";
-import { CreateStudy } from "./CreateStudy";
+import { CreateStudyBody } from "./CreateStudy.js";
 
 export const PatchStudy = s.partial(s.object({
-  ...CreateStudy,
+  ...CreateStudyBody,
   point: s.min(s.integer(), 0)
 }));
