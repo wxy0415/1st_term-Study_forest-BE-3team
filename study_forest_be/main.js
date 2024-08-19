@@ -3,6 +3,7 @@ import * as dotenv from "dotenv";
 dotenv.config;
 import express from "express";
 import moment from "moment";
+import cors from 'cors'
 import { subDays } from "date-fns";
 import asyncHandler from "./src/utils/asyncErrorHandler.js";
 import { assert } from "superstruct";
@@ -17,6 +18,7 @@ import { todayUCT, nextDayUCT } from "./src/utils/timeRangeHandler.js";
 const prisma = new PrismaClient();
 
 const app = new express();
+app.use(cors())
 app.use(express.json());
 
 function throwUnauthorized() {
