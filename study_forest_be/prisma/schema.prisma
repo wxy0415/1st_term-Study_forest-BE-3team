@@ -15,43 +15,45 @@ datasource db {
 
 model Study {
   id          String   @id @default(uuid())
-  nickName    String   @unique
-  studyName   String
-  description String   @default("")
-  background  String
-  password    String
+  nickname    String   @unique @db.VarChar(12)
+  studyName   String   @map("study_name") @db.VarChar(20)
+  description String   @db.VarChar(100) @default("")
+  background  String   @db.VarChar(50)
+  password    String   @db.VarChar(24)
   point       Int      @default(0)
   createdAt   DateTime @default(now())
-  updatesdAt  DateTime @updatedAt
+  updatedAt   DateTime @updatedAt
   Emojis      Emoji[]
   Habits      Habit[]
 }
 
 model Emoji {
   id        String   @id @default(uuid())
-  emo_num   Int
-  count     Int
+  Study     Study    @relation(fields: [studyId], references: [id], onDelete: Cascade)
+  studyId   String   @map("study_id")
+  emoNum    Int
+  count     Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  study     Study    @relation(fields: [studyId], references: [id])
-  studyId   String
 }
 
 model Habit {
-  id              String           @id @default(uuid())
-  name            String
-  deleted         Boolean          @default(false)
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
-  study           Study            @relation(fields: [studyId], references: [id])
-  studyId         String
-  HabitSuccesseds HabitSuccessed[]
+  id                String             @id @default(uuid())
+  Study             Study              @relation(fields: [studyId], references: [id], onDelete: Cascade)
+  studyId           String             @map("study_id")
+  name              String             @db.VarChar(30)
+  deleted           Boolean            @default(false)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  HabitSuccessDates HabitSuccessDate[]
 }
 
-model HabitSuccessed {
+model HabitSuccessDate {
   id        String   @id @default(uuid())
+  Habit     Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  habitId   String   @map("habit_id")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  habit     Habit    @relation(fields: [habitId], references: [id])
-  habitId   String
+
+  @@map("Habit_Success_Date")
 }

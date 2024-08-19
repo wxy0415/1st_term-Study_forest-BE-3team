@@ -1,22 +1,23 @@
-GET http://localhost:3000/study/a1818234-753d-4eb2-a4f9-e709afb0c322/habitList
+GET http://localhost:3000/study/afeac530-e924-4253-9666-c247f41725aa/habitList
 
+### 
+GET http://localhost:3000/study/afeac530-e924-4253-9666-c247f41725aa/habitData
 
 ###
-POST   http://localhost:3000/study/9cf0cb9b-1ba6-49df-bfa8-1348825e3c5f/habit
+POST   http://localhost:3000/study/afeac530-e924-4253-9666-c247f41725aa/habit
 Content-Type: application/json
 
 {
-    "name": "물마시기",
-    "studyId": "9cf0cb9b-1ba6-49df-bfa8-1348825e3c5f"
+    "name": "물마시기"
 }
 
-###
-PATCH   http://localhost:3000/habit/5a4850ef-0a81-48a2-bfe0-7141f075c5c2
+### 이름 수정
+PATCH   http://localhost:3000/habit/eb6a5571-f1b7-4fcf-ac55-1f27d6dddd0d
 Content-Type: application/json
 
 {
     "name": "1시간 공부하기"
 }
 
-### 삭제
-PATCH   http://localhost:3000/habit/5a4850ef-0a81-48a2-bfe0-7141f075c5c2/delete
+### 습관 삭제
+PATCH   http://localhost:3000/habit/eb6a5571-f1b7-4fcf-ac55-1f27d6dddd0d/delete
