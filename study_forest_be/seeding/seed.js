@@ -8,9 +8,9 @@ async function main() {
   await prisma.study.deleteMany();
   await prisma.emoji.deleteMany();
   await prisma.habit.deleteMany();
-  await prisma.habitSuccessed.deleteMany();
+  await prisma.habitSuccessDate.deleteMany();
 
-  // 목 데이터 삽입
+  // // 목 데이터 삽입
   await prisma.study.createMany({
     data: Studies,
     skipDuplicates: true,
@@ -23,7 +23,7 @@ async function main() {
     data: Habits,
     skipDuplicates: true,
   });
-  await prisma.habitSuccessed.createMany({
+  await prisma.habitSuccessDate.createMany({
     data: HabitSuccessed,
     skipDuplicates: true,
   });
