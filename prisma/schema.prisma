@@ -17,7 +17,7 @@ model Study {
   id          String   @id @default(uuid())
   nickname    String   @unique @db.VarChar(12)
   studyName   String   @map("study_name") @db.VarChar(20)
-  description String   @db.VarChar(100) @default("")
+  description String   @default("") @db.VarChar(100)
   background  String   @db.VarChar(50)
   password    String   @db.VarChar(24)
   point       Int      @default(0)

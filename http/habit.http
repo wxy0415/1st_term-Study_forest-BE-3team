@@ -1,0 +1,23 @@
+GET http://localhost:3000/study/g7h8i9j0-1234-1011-1213-141516171819/habitList
+
+### 
+GET http://localhost:3000/study/g7h8i9j0-1234-1011-1213-141516171819/habitData
+
+###
+POST   http://localhost:3000/study/g7h8i9j0-1234-1011-1213-141516171819/habit
+Content-Type: application/json
+
+{
+    "name": "물마시기"
+}
+
+### 이름 수정
+PATCH   http://localhost:3000/habit/h7a6b2e3-8d4c-40ec-b5ac-a1dd9ed93e2
+Content-Type: application/json
+
+{
+    "name": "1시간 공부하기"
+}
+
+### 습관 삭제
+PATCH   http://localhost:3000/habit/h7a6b2e3-8d4c-40ec-b5ac-a1dd9ed93e2/delete

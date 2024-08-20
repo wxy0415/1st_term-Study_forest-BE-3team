@@ -1,10 +1,10 @@
 GET  http://localhost:3000/study
 
 ###
-GET  http://localhost:3000/study?page=&pageSize=&order=recent&keyWord=
+GET  http://localhost:3000/study?page=1&pageSize=6&order=recent&keyWord=
 
 ###
-GET  http://localhost:3000/study/aec07304-e984-417d-a22e-fca2242c9e12
+GET  http://localhost:3000/study/adfc1706-a7f6-4c6e-a006-1733a854afbb
 
 ###
 POST   http://localhost:3000/study
@@ -18,7 +18,7 @@ Content-Type: application/json
 }
 
 ###
-PATCH   http://localhost:3000/study/67d1cf14-9b68-42f2-aa09-abd455d3bcd7
+PATCH   http://localhost:3000/study/b5fce837-421d-44ac-8107-cd14ad8bd2cc
 Content-Type: application/json
 
 {
@@ -29,10 +29,10 @@ Content-Type: application/json
 }
 
 ###
-DELETE  http://localhost:3000/study/6a6579ef-1e4f-410f-9c96-9c54865e4ddf
+DELETE  http://localhost:3000/study/b5fce837-421d-44ac-8107-cd14ad8bd2cc
 
 ###
-POST http://localhost:3000/study/648ab555-4ca1-40e5-91dc-6fdf0c793488/auth
+POST http://localhost:3000/study/dd06dc05-6670-4358-bf0b-eef84c2de979/auth
 Content-Type: application/json
 
 {
