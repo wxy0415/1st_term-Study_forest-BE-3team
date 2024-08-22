@@ -28,7 +28,7 @@ function throwUnauthorized() {
   throw error;
 }
 
-const emojiFormat = { emoNum: true, count: true };
+const emojiFormat = { emojiCode: true, count: true };
 
 /** /study POST 스터디 생성 */
 app.post(

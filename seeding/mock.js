@@ -59,7 +59,7 @@ export const Studies = [
 export const Emoji = [
   {
     id: "2087af75-090e-4e42-9aba-304b37800bbc",
-    emojoCode: "1F9D1-200D-1F91D-200D-1F9D1",
+    emojiCode: "1F9D1-200D-1F91D-200D-1F9D1",
     count: 7,
     createdAt: "2024-08-14T09:57:59.525Z",
     updatedAt: "2024-08-14T09:56:36.140Z",
@@ -67,7 +67,7 @@ export const Emoji = [
   },
   {
     id: "2087af75-090e-4e42-9aba-304b37800bb1",
-    emojoCode: "1f619",
+    emojiCode: "1f619",
     count: 3,
     createdAt: "2024-08-14T09:57:59.525Z",
     updatedAt: "2024-08-14T09:56:36.140Z",
@@ -75,7 +75,7 @@ export const Emoji = [
   },
   {
     id: "2087af75-090e-4e42-9aba-304b37800bb2",
-    emojoCode: "1fae0",
+    emojiCode: "1fae0",
     count: 7,
     createdAt: "2024-08-14T09:57:59.525Z",
     updatedAt: "2024-08-14T09:56:36.140Z",
@@ -83,7 +83,7 @@ export const Emoji = [
   },
   {
     id: "2087af75-090e-4e42-9aba-304b37800bb3",
-    emojoCode: "1f388",
+    emojiCode: "1f388",
     count: 7,
     createdAt: "2024-08-14T09:57:59.525Z",
     updatedAt: "2024-08-14T09:56:36.140Z",
@@ -91,7 +91,7 @@ export const Emoji = [
   },
   {
     id: "2087af75-090e-4e42-9aba-304b37800bb4",
-    emojoCode: "1f3f4-200d-2620-fe0f",
+    emojiCode: "1f3f4-200d-2620-fe0f",
     count: 7,
     createdAt: "2024-08-14T09:57:59.525Z",
     updatedAt: "2024-08-14T09:56:36.140Z",
@@ -99,7 +99,7 @@ export const Emoji = [
   },
   {
     id: "3c68ee86-b1ef-4bfd-a6f6-59f6d2a19c25",
-    emojoCode: "1f3f4-200d-2620-fe0f",
+    emojiCode: "1f3f4-200d-2620-fe0f",
     count: 10,
     createdAt: "2024-08-14T09:57:59.525Z",
     updatedAt: "2024-08-14T09:56:35.318Z",
@@ -107,7 +107,7 @@ export const Emoji = [
   },
   {
     id: "46354e36-b9c7-4916-ac21-24522137d39f",
-    emojoCode: "26bd",
+    emojiCode: "26bd",
     count: 100,
     createdAt: "2024-08-14T09:57:59.525Z",
     updatedAt: "2024-08-14T09:56:35.318Z",
@@ -115,7 +115,7 @@ export const Emoji = [
   },
   {
     id: "4d5c8469-51c5-430d-b23e-4e030472209a",
-    emojoCode: "1f30f",
+    emojiCode: "1f30f",
     count: 23,
     createdAt: "2024-08-14T09:57:59.525Z",
     updatedAt: "2024-08-14T09:56:35.318Z",
@@ -123,7 +123,7 @@ export const Emoji = [
   },
   {
     id: "599af954-9f6d-4f1e-bd2e-26e802145bfa",
-    emojoCode: "2721-fe0f",
+    emojiCode: "2721-fe0f",
     count: 4,
     createdAt: "2024-08-14T09:57:59.525Z",
     updatedAt: "2024-08-14T09:56:35.318Z",
@@ -131,7 +131,7 @@ export const Emoji = [
   },
   {
     id: "67953264-f54f-4edd-b68d-e25e0b7a0a99",
-    emojoCode: "1f349",
+    emojiCode: "1f349",
     count: 234,
     createdAt: "2024-08-14T09:57:59.525Z",
     updatedAt: "2024-08-14T09:56:35.318Z",
@@ -139,7 +139,7 @@ export const Emoji = [
   },
   {
     id: "7c181517-0425-4d13-95ff-09a2f246de29",
-    emojoCode: "1fa71",
+    emojiCode: "1fa71",
     count: 437,
     createdAt: "2024-08-14T09:57:59.525Z",
     updatedAt: "2024-08-14T09:56:35.318Z",
@@ -147,7 +147,7 @@ export const Emoji = [
   },
   {
     id: "a8230bfb-d7cf-493d-9f51-3bc5531a6f85",
-    emojoCode: "1f4cc",
+    emojiCode: "1f4cc",
     count: 66,
     createdAt: "2024-08-14T09:57:59.525Z",
     updatedAt: "2024-08-14T09:56:35.318Z",
@@ -155,7 +155,7 @@ export const Emoji = [
   },
   {
     id: "f2d557c0-dc80-4bc9-9373-7208d03dc2ed",
-    emojoCode: "1f91e",
+    emojiCode: "1f91e",
     count: 9,
     createdAt: "2024-08-14T09:57:59.525Z",
     updatedAt: "2024-08-14T09:56:35.318Z",
