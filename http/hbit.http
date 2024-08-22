@@ -21,3 +21,6 @@ Content-Type: application/json
 
 ### 습관 삭제
 PATCH   http://localhost:3000/habit/eb6a5571-f1b7-4fcf-ac55-1f27d6dddd0d/delete
+
+###
+GET https://onest-term-study-forest-be-3team-kjey.onrender.com/study/8523e4cc-0985-4c20-b8b2-2d86e4fe56d5/habitList
