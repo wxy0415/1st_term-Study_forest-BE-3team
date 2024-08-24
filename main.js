@@ -28,7 +28,7 @@ function throwUnauthorized() {
   throw error;
 }
 
-const emojiFormat = { emoNum: true, count: true };
+const emojiFormat = { emojiCode: true, count: true };
 
 /** /study POST 스터디 생성 */
 app.post(
@@ -395,18 +395,17 @@ app.get(
   })
 );
 
-/** /study/:id/emoji/:emojiNum  PUT 미정 응원 이모지 추가 */
+/** /study/:id/emoji/:emojiCode  PUT 미정 응원 이모지 추가 */
 app.put(
-  "/study/:id/emoji/:emojiNum",
+  "/study/:id/emoji/:emojiCode",
   asyncHandler(async (req, res) => {
-    const { id: studyId, emojiNum } = req.params;
-    const castedEmoNum = Number(emojiNum);
+    const { id: studyId, emojiCode } = req.params;
     const emoji = await prisma.emoji.findFirst({
-      where: { studyId: studyId, emoNum: castedEmoNum },
+      where: { studyId: studyId, emojiCode: emojiCode },
     });
 
     if (!emoji) {
-      const data = { emoNum: castedEmoNum, count: 1, studyId: studyId };
+      const data = { emojiCode: emojiCode, count: 1, studyId: studyId };
       const result = await prisma.emoji.create({
         data: data,
         select: emojiFormat,
@@ -414,7 +413,7 @@ app.put(
       res.status(201).send(result);
       return;
     } else {
-      const data = { emoNum: castedEmoNum, count: Number(emoji.count) + 1 };
+      const data = { emojiCode: emojiCode, count: Number(emoji.count) + 1 };
       const result = await prisma.emoji.update({
         where: { id: emoji.id },
         data: data,
