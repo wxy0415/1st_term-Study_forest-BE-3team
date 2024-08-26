@@ -213,6 +213,9 @@ app.get(
   "/study/:id/habitList",
   asyncHandler(async (req, res) => {
     const { id } = req.params;
+    const startOfDay = new Date(`${date}T00:00:00`).toLocaleString("en-US", {
+      timeZone,
+    });
 
     const habits = await prisma.habit.findMany({
       where: {
@@ -397,9 +400,10 @@ app.get(
 
 /** /study/:id/emoji/:emojiCode  PUT 미정 응원 이모지 추가 */
 app.put(
-  "/study/:id/emoji/:emojiCode",
+  "/study/:id/emoji",
   asyncHandler(async (req, res) => {
-    const { id: studyId, emojiCode } = req.params;
+    const { id: studyId } = req.params;
+    const emojiCode = req.body;
     const emoji = await prisma.emoji.findFirst({
       where: { studyId: studyId, emojiCode: emojiCode },
     });
