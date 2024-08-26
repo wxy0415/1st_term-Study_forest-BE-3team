@@ -403,7 +403,7 @@ app.put(
   "/study/:id/emoji",
   asyncHandler(async (req, res) => {
     const { id: studyId } = req.params;
-    const emojiCode = req.body;
+    const { emojiCode } = req.body;
     const emoji = await prisma.emoji.findFirst({
       where: { studyId: studyId, emojiCode: emojiCode },
     });
