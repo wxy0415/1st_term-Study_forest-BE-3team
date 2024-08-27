@@ -12,6 +12,7 @@ import {
   PatchStudy,
   Password,
 } from "./src/structs/study/Study.js";
+import { Emoji } from "./src/structs/emoji/emoji.js";
 import { ValidationHabit } from "./src/structs/habit/Habit.js";
 import { todayUCT, nextDayUCT } from "./src/utils/timeRangeHandler.js";
 
@@ -398,12 +399,13 @@ app.get(
   })
 );
 
-/** /study/:id/emoji/:emojiCode  PUT 미정 응원 이모지 추가 */
+/** /study/:id/emoji/:emojiCode PUT 미정 응원 이모지 추가 */
 app.put(
   "/study/:id/emoji",
   asyncHandler(async (req, res) => {
     const { id: studyId } = req.params;
     const { emojiCode } = req.body;
+    assert(req.body, Emoji);
     const emoji = await prisma.emoji.findFirst({
       where: { studyId: studyId, emojiCode: emojiCode },
     });

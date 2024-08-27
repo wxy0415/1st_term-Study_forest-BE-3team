@@ -1,5 +1,5 @@
 import * as s from "superstruct";
 
 export const Emoji = s.object({
-  emoNum: s.integer(),
+  emojiCode: s.size(s.string(), 1, 49),
 });
