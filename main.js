@@ -10,7 +10,8 @@ import {
   PatchStudy,
   Password,
 } from "./src/structs/study/Study.js";
-import { Emoji } from "./src/structs/emoji/emoji.js";
+import { ValidateEmojiCode } from "./src/structs/emoji/emoji.js";
+import { ValidateTimeZone } from "./src/structs/habit/Habit.js";
 import { ValidationHabit } from "./src/structs/habit/Habit.js";
 import { DateTime } from "luxon";
 
@@ -222,6 +223,7 @@ app.get(
   asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { timeZone } = req.query;
+    assert(timeZone, ValidateTimeZone);
     const timeZoneString = timeZone || "Asia/Seoul";
     const now = DateTime.now().setZone(timeZoneString);
     const startOfDay = now.startOf("day");
@@ -269,7 +271,7 @@ app.get(
   asyncHandler(async (req, res) => {
     const { id: studyId } = req.params;
     const { timeZone } = req.query;
-
+    assert(timeZone, ValidateTimeZone);
     const timeZoneString = timeZone || "Asia/Seoul";
     const now = DateTime.now().setZone(timeZoneString);
     const startOfDay = now.startOf("day");
@@ -433,7 +435,7 @@ app.put(
   asyncHandler(async (req, res) => {
     const { id: studyId } = req.params;
     const { emojiCode } = req.body;
-    assert(req.body, Emoji);
+    assert(req.body, ValidateEmojiCode);
     const emoji = await prisma.emoji.findFirst({
       where: { studyId: studyId, emojiCode: emojiCode },
     });
