@@ -223,7 +223,8 @@ app.get(
   asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { timeZone } = req.query;
-    assert(timeZone, ValidateTimeZone);
+    const decodedTimeZone = decodeURIComponent(timeZone);
+    assert(decodedTimeZone, ValidateTimeZone);
     const timeZoneString = timeZone || "Asia/Seoul";
     const now = DateTime.now().setZone(timeZoneString);
     const startOfDay = now.startOf("day");
@@ -271,7 +272,8 @@ app.get(
   asyncHandler(async (req, res) => {
     const { id: studyId } = req.params;
     const { timeZone } = req.query;
-    assert(timeZone, ValidateTimeZone);
+    const decodedTimeZone = decodeURIComponent(timeZone);
+    assert(decodedTimeZone, ValidateTimeZone);
     const timeZoneString = timeZone || "Asia/Seoul";
     const now = DateTime.now().setZone(timeZoneString);
     const startOfDay = now.startOf("day");
