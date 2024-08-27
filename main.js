@@ -226,7 +226,7 @@ app.get(
     const { timeZone } = req.query;
 
     const timeZoneString = timeZone || "Asia/Seoul";
-    const now = DateTime.now().setZone("Asia/Seoul");
+    const now = DateTime.now().setZone(timeZoneString);
     const startOfDay = now.startOf("day");
     const UTCTime = startOfDay.toUTC();
 
