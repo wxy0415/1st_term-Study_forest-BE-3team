@@ -78,7 +78,7 @@ app.get(
     const pageSizeNum = Number(pageSize) || 6;
     const skipInt = (pageNum - 1) * pageSizeNum;
 
-    const studys = await prisma.study.findMany({
+    const studies = await prisma.study.findMany({
       orderBy,
       skip: parseInt(skipInt),
       take: parseInt(pageSizeNum),
@@ -108,7 +108,7 @@ app.get(
       },
     });
 
-    res.send({ totalCount, studys });
+    res.send({ totalCount, studies });
   })
 );
 
