@@ -1,7 +1,9 @@
 GET  http://localhost:3000/study
 
 ###
-GET  http://localhost:3000/study?page=&pageSize=&order=recent&keyWord=스턴트
+GET  http://localhost:3000/study?page=&pageSize=&order=recent&keyWord=
+
+
 
 ###
 GET  http://localhost:3000/study/afeac530-e924-4253-9666-c247f41725aa/habitData?timeZone=

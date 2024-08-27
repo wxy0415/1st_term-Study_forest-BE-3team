@@ -224,7 +224,6 @@ app.get(
   asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { timeZone } = req.query;
-
     const timeZoneString = timeZone || "Asia/Seoul";
     const now = DateTime.now().setZone(timeZoneString);
     const startOfDay = now.startOf("day");
@@ -298,18 +297,16 @@ app.get(
       const success = HabitSuccessDates.map((date) => {
         const checkTimeZone = date.createdAt.getTimezoneOffset();
 
-        let UTCMilisec;
+        let timeZoneMilisec;
         if (checkTimeZone !== 0) {
-          UTCMilisec = date.createdAt.getTime();
+          timeZoneMilisec = date.createdAt.getTime();
         } else {
-          const getNow = new Date();
-          getNow.setHours(0, 0, 0, 0);
-
-          const getOffset = getNow.getTimezoneOffset();
-          UTCMilisec = date.createdAt.getTime() + getOffset * 60 * 1000;
+          const getNow = startOfDay.offset
+          
+          timeZoneMilisec = date.createdAt.getTime() + getNow * 60 * 1000;
         }
 
-        const successDay = DateTime.fromMillis(UTCMilisec).toUTC();
+        const successDay = DateTime.fromMillis(timeZoneMilisec).toUTC();
         const diffInDays = successDay.diff(
           UTCTime,
           "milliseconds"
