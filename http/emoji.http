@@ -1,0 +1,4 @@
+GET http://localhost:3000/study/648ab555-4ca1-40e5-91dc-6fdf0c793488/emoji
+
+###
+PUT http://localhost:3000/study/648ab555-4ca1-40e5-91dc-6fdf0c793488/emoji/1F9D1-200D-1F91D-200D-1F9D1

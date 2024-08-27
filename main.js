@@ -1,10 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 import * as dotenv from "dotenv";
 dotenv.config;
+import cors from "cors";
 import express from "express";
-import moment from "moment";
-import cors from 'cors'
-import { subDays } from "date-fns";
+// import moment from "moment";
+// import { subDays } from "date-fns";
 import asyncHandler from "./src/utils/asyncErrorHandler.js";
 import { assert } from "superstruct";
 import {
@@ -13,12 +13,14 @@ import {
   Password,
 } from "./src/structs/study/Study.js";
 import { ValidationHabit } from "./src/structs/habit/Habit.js";
-import { todayUCT, nextDayUCT } from "./src/utils/timeRangeHandler.js";
+import { DateTime } from "luxon";
+// import { todayUCT, nextDayUCT } from "./src/utils/timeRangeHandler.js";
 
 const prisma = new PrismaClient();
 
-const app = new express();
-app.use(cors())
+const app = express();
+
+app.use(cors());
 app.use(express.json());
 
 function throwUnauthorized() {
@@ -27,7 +29,7 @@ function throwUnauthorized() {
   throw error;
 }
 
-const emojiFormat = { emoNum: true, count: true };
+const emojiFormat = { emojiCode: true, count: true };
 
 /** /study POST 스터디 생성 */
 app.post(
@@ -98,7 +100,16 @@ app.get(
       },
     });
 
-    res.send(studys);
+    const totalCount = await prisma.study.count({
+      where: {
+        OR: [
+          { studyName: { contains: keyWord } },
+          { description: { contains: keyWord } },
+        ],
+      },
+    });
+
+    res.send({ totalCount, studys });
   })
 );
 
@@ -212,6 +223,12 @@ app.get(
   "/study/:id/habitList",
   asyncHandler(async (req, res) => {
     const { id } = req.params;
+    const { timeZone } = req.query;
+
+    const timeZoneString = timeZone || "Asia/Seoul";
+    const now = DateTime.now().setZone("Asia/Seoul");
+    const startOfDay = now.startOf("day");
+    const UTCTime = startOfDay.toUTC();
 
     const habits = await prisma.habit.findMany({
       where: {
@@ -228,8 +245,8 @@ app.get(
         HabitSuccessDates: {
           where: {
             createdAt: {
-              gte: todayUCT,
-              // lt: nextDayUCT,
+              gte: UTCTime.toISO(),
+              // lt: nextDayUTC,
             },
           },
           select: {
@@ -255,16 +272,22 @@ app.get(
   "/study/:id/habitData",
   asyncHandler(async (req, res) => {
     const { id: studyId } = req.params;
-    const now = new Date();
-    const DBNow = now.setHours(now.getHours() - 9);
-    const oneWeekAgo = subDays(DBNow, 7);
+    const { timeZone } = req.query;
+
+    const timeZoneString = timeZone || "Asia/Seoul";
+    const now = DateTime.now().setZone(timeZoneString);
+    const startOfDay = now.startOf("day");
+    const UTCTime = startOfDay.toUTC();
+    const oneWeekAgo = UTCTime.minus({ days: 6 });
 
     const study = await prisma.study.findUniqueOrThrow({
       where: { id: studyId },
       include: {
         Habits: {
           include: {
-            HabitSuccessDates: { where: { createdAt: { gte: oneWeekAgo } } },
+            HabitSuccessDates: {
+              where: { createdAt: { gte: oneWeekAgo.toISO() } },
+            },
           },
         },
       },
@@ -273,9 +296,25 @@ app.get(
     const habits = study.Habits.map((item) => {
       const { id, name, deleted, HabitSuccessDates } = item;
       const success = HabitSuccessDates.map((date) => {
-        const successDay = moment(date.createdAt, "YYYY-MM-DDTHH:mm:ss.SSSZ");
-        const diff =
-          Math.floor(successDay.diff(DBNow) / (1000 * 60 * 60 * 24)) + 6;
+        const checkTimeZone = date.createdAt.getTimezoneOffset();
+
+        let UTCMilisec;
+        if (checkTimeZone !== 0) {
+          UTCMilisec = date.createdAt.getTime();
+        } else {
+          const getNow = new Date();
+          getNow.setHours(0, 0, 0, 0);
+
+          const getOffset = getNow.getTimezoneOffset();
+          UTCMilisec = date.createdAt.getTime() + getOffset * 60 * 1000;
+        }
+
+        const successDay = DateTime.fromMillis(UTCMilisec).toUTC();
+        const diffInDays = successDay.diff(
+          UTCTime,
+          "milliseconds"
+        ).milliseconds;
+        const diff = Math.floor(diffInDays / (1000 * 60 * 60 * 24)) + 6;
 
         return diff;
       });
@@ -394,18 +433,17 @@ app.get(
   })
 );
 
-/** /study/:id/emoji/:emojiNum  PUT 미정 응원 이모지 추가 */
+/** /study/:id/emoji/:emojiCode  PUT 미정 응원 이모지 추가 */
 app.put(
-  "/study/:id/emoji/:emojiNum",
+  "/study/:id/emoji/:emojiCode",
   asyncHandler(async (req, res) => {
-    const { id: studyId, emojiNum } = req.params;
-    const castedEmoNum = Number(emojiNum);
+    const { id: studyId, emojiCode } = req.params;
     const emoji = await prisma.emoji.findFirst({
-      where: { studyId: studyId, emoNum: castedEmoNum },
+      where: { studyId: studyId, emojiCode: emojiCode },
     });
 
     if (!emoji) {
-      const data = { emoNum: castedEmoNum, count: 1, studyId: studyId };
+      const data = { emojiCode: emojiCode, count: 1, studyId: studyId };
       const result = await prisma.emoji.create({
         data: data,
         select: emojiFormat,
@@ -413,7 +451,7 @@ app.put(
       res.status(201).send(result);
       return;
     } else {
-      const data = { emoNum: castedEmoNum, count: Number(emoji.count) + 1 };
+      const data = { emojiCode: emojiCode, count: Number(emoji.count) + 1 };
       const result = await prisma.emoji.update({
         where: { id: emoji.id },
         data: data,

@@ -17,8 +17,8 @@ model Study {
   id          String   @id @default(uuid())
   nickname    String   @unique @db.VarChar(12)
   studyName   String   @map("study_name") @db.VarChar(20)
-  description String   @db.VarChar(100) @default("")
-  background  String   @db.VarChar(50)
+  description String   @default("") @db.VarChar(100)
+  background  String   @db.VarChar(100)
   password    String   @db.VarChar(24)
   point       Int      @default(0)
   createdAt   DateTime @default(now())
@@ -31,7 +31,7 @@ model Emoji {
   id        String   @id @default(uuid())
   Study     Study    @relation(fields: [studyId], references: [id], onDelete: Cascade)
   studyId   String   @map("study_id")
-  emoNum    Int
+  emojiCode String   @map("emoji_code") @db.VarChar(49)
   count     Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

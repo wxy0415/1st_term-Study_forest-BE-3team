@@ -4,7 +4,7 @@ CREATE TABLE "Study" (
     "nickname" VARCHAR(12) NOT NULL,
     "study_name" VARCHAR(20) NOT NULL,
     "description" VARCHAR(100) NOT NULL DEFAULT '',
-    "background" VARCHAR(50) NOT NULL,
+    "background" VARCHAR(100) NOT NULL,
     "password" VARCHAR(24) NOT NULL,
     "point" INTEGER NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -17,7 +17,7 @@ CREATE TABLE "Study" (
 CREATE TABLE "Emoji" (
     "id" TEXT NOT NULL,
     "study_id" TEXT NOT NULL,
-    "emoNum" INTEGER NOT NULL,
+    "emoji_code" VARCHAR(49) NOT NULL,
     "count" INTEGER NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
