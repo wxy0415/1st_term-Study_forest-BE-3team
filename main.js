@@ -10,9 +10,10 @@ import {
   PatchStudy,
   Password,
 } from "./src/structs/study/Study.js";
+import { ValidateEmojiCode } from "./src/structs/emoji/emoji.js";
+import { ValidateTimeZone } from "./src/structs/habit/Habit.js";
 import { ValidationHabit } from "./src/structs/habit/Habit.js";
 import { DateTime } from "luxon";
-
 
 const prisma = new PrismaClient();
 
@@ -222,8 +223,10 @@ app.get(
   asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { timeZone } = req.query;
-    const timeZoneString = timeZone || "Asia/Seoul";
-    const now = DateTime.now().setZone(timeZoneString);
+    const decodedTimeZone = decodeURIComponent(timeZone);
+    assert(decodedTimeZone, ValidateTimeZone);
+    // const timeZoneString = timeZone || "Asia/Seoul";
+    const now = DateTime.now().setZone(decodedTimeZone);
     const startOfDay = now.startOf("day");
     const UTCTime = startOfDay.toUTC();
 
@@ -269,9 +272,10 @@ app.get(
   asyncHandler(async (req, res) => {
     const { id: studyId } = req.params;
     const { timeZone } = req.query;
-
-    const timeZoneString = timeZone || "Asia/Seoul";
-    const now = DateTime.now().setZone(timeZoneString);
+    const decodedTimeZone = decodeURIComponent(timeZone);
+    assert(decodedTimeZone, ValidateTimeZone);
+    // const timeZoneString = timeZone || "Asia/Seoul";
+    const now = DateTime.now().setZone(decodedTimeZone);
     const startOfDay = now.startOf("day");
     const UTCTime = startOfDay.toUTC();
     const oneWeekAgo = UTCTime.minus({ days: 6 });
@@ -298,8 +302,8 @@ app.get(
         if (checkTimeZone !== 0) {
           timeZoneMilisec = date.createdAt.getTime();
         } else {
-          const getNow = startOfDay.offset
-          
+          const getNow = startOfDay.offset;
+
           timeZoneMilisec = date.createdAt.getTime() + getNow * 60 * 1000;
         }
 
@@ -427,11 +431,13 @@ app.get(
   })
 );
 
-/** /study/:id/emoji/:emojiCode  PUT 미정 응원 이모지 추가 */
+/** /study/:id/emoji/:emojiCode PUT 미정 응원 이모지 추가 */
 app.put(
-  "/study/:id/emoji/:emojiCode",
+  "/study/:id/emoji",
   asyncHandler(async (req, res) => {
-    const { id: studyId, emojiCode } = req.params;
+    const { id: studyId } = req.params;
+    const { emojiCode } = req.body;
+    assert(req.body, ValidateEmojiCode);
     const emoji = await prisma.emoji.findFirst({
       where: { studyId: studyId, emojiCode: emojiCode },
     });
