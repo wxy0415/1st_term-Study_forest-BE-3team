@@ -307,7 +307,7 @@ app.get(
           timeZoneMilisec = date.createdAt.getTime() + getNow * 60 * 1000;
         }
 
-        const successDay = DateTime.fromMillis(UTCMilisec).toUTC();
+        const successDay = DateTime.fromMillis(timeZoneMilisec).toUTC();
         const diffInDays = successDay.diff(
           UTCTime,
           "milliseconds"
