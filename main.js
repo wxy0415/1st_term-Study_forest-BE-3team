@@ -223,10 +223,10 @@ app.get(
   asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { timeZone } = req.query;
-    timeZone = decodeURIComponent(timeZone);
-    assert(timeZone, ValidateTimeZone);
+    const decodedTimeZone = decodeURIComponent(timeZone);
+    assert(decodedTimeZone, ValidateTimeZone);
     // const timeZoneString = timeZone || "Asia/Seoul";
-    const now = DateTime.now().setZone(timeZone);
+    const now = DateTime.now().setZone(decodedTimeZone);
     const startOfDay = now.startOf("day");
     const UTCTime = startOfDay.toUTC();
 
@@ -272,10 +272,10 @@ app.get(
   asyncHandler(async (req, res) => {
     const { id: studyId } = req.params;
     const { timeZone } = req.query;
-    timeZone = decodeURIComponent(timeZone);
-    assert(timeZone, ValidateTimeZone);
+    const decodedTimeZone = decodeURIComponent(timeZone);
+    assert(decodedTimeZone, ValidateTimeZone);
     // const timeZoneString = timeZone || "Asia/Seoul";
-    const now = DateTime.now().setZone(timeZone);
+    const now = DateTime.now().setZone(decodedTimeZone);
     const startOfDay = now.startOf("day");
     const UTCTime = startOfDay.toUTC();
     const oneWeekAgo = UTCTime.minus({ days: 6 });
