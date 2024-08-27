@@ -299,6 +299,7 @@ app.get(
         const checkTimeZone = date.createdAt.getTimezoneOffset();
 
         let timeZoneMilisec;
+
         if (checkTimeZone !== 0) {
           timeZoneMilisec = date.createdAt.getTime();
         } else {
