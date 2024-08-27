@@ -7,7 +7,6 @@ export const ValidationHabit = s.object({
 
 const validTimeZones = new Set(listTimeZones());
 
-export const ValidateTimeZone = s.define(
-  "TimeZone",
-  (value) => s.string()(value) && validTimeZones.has(value)
-);
+export const ValidateTimeZone = s.refine(s.string(), "TimeZone", (value) => {
+  return validTimeZones.has(value);
+});
