@@ -1,23 +1,3 @@
-import { DateTime } from "luxon";
-
-// const today = new Date();
-// const year = today.getFullYear();
-// const month = String(today.getMonth() + 1).padStart(2, "0");
-// const day = String(today.getDate()).padStart(2, "0");
-// const formattedDate = `${year}-${month}-${day}`;
-
-// const todayUCT = new Date(
-//   new Date(formattedDate).getTime() - 9 * 60 * 60 * 1000
-// );
-
-// const nextDayUCT = new Date(
-//   new Date(formattedDate).getTime() + 15 * 60 * 60 * 1000
-// );
-
-// export { todayUCT, nextDayUCT };
-
-
-
 // 한국 표준시 (KST):
 
 // 타임존: Asia/Seoul
@@ -50,3 +30,4 @@ import { DateTime } from "luxon";
 
 // 타임존: America/Anchorage
 // UTC 오프셋: UTC-09:00 (서머타임 적용 시 UTC-08:00)
+

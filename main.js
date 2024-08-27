@@ -3,8 +3,6 @@ import * as dotenv from "dotenv";
 dotenv.config;
 import cors from "cors";
 import express from "express";
-// import moment from "moment";
-// import { subDays } from "date-fns";
 import asyncHandler from "./src/utils/asyncErrorHandler.js";
 import { assert } from "superstruct";
 import {
@@ -14,7 +12,7 @@ import {
 } from "./src/structs/study/Study.js";
 import { ValidationHabit } from "./src/structs/habit/Habit.js";
 import { DateTime } from "luxon";
-// import { todayUCT, nextDayUCT } from "./src/utils/timeRangeHandler.js";
+
 
 const prisma = new PrismaClient();
 
@@ -246,7 +244,6 @@ app.get(
           where: {
             createdAt: {
               gte: UTCTime.toISO(),
-              // lt: nextDayUTC,
             },
           },
           select: {
