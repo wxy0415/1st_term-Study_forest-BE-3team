@@ -3,8 +3,6 @@ import * as dotenv from "dotenv";
 dotenv.config;
 import cors from "cors";
 import express from "express";
-import moment from "moment";
-import { subDays } from "date-fns";
 import asyncHandler from "./src/utils/asyncErrorHandler.js";
 import { assert } from "superstruct";
 import {
@@ -14,7 +12,7 @@ import {
 } from "./src/structs/study/Study.js";
 import { Emoji } from "./src/structs/emoji/emoji.js";
 import { ValidationHabit } from "./src/structs/habit/Habit.js";
-import { todayUCT, nextDayUCT } from "./src/utils/timeRangeHandler.js";
+import { DateTime } from "luxon";
 
 const prisma = new PrismaClient();
 
@@ -100,7 +98,16 @@ app.get(
       },
     });
 
-    res.send(studys);
+    const totalCount = await prisma.study.count({
+      where: {
+        OR: [
+          { studyName: { contains: keyWord } },
+          { description: { contains: keyWord } },
+        ],
+      },
+    });
+
+    res.send({ totalCount, studys });
   })
 );
 
@@ -214,9 +221,11 @@ app.get(
   "/study/:id/habitList",
   asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const startOfDay = new Date(`${date}T00:00:00`).toLocaleString("en-US", {
-      timeZone,
-    });
+    const { timeZone } = req.query;
+    const timeZoneString = timeZone || "Asia/Seoul";
+    const now = DateTime.now().setZone(timeZoneString);
+    const startOfDay = now.startOf("day");
+    const UTCTime = startOfDay.toUTC();
 
     const habits = await prisma.habit.findMany({
       where: {
@@ -233,8 +242,7 @@ app.get(
         HabitSuccessDates: {
           where: {
             createdAt: {
-              gte: todayUCT,
-              // lt: nextDayUCT,
+              gte: UTCTime.toISO(),
             },
           },
           select: {
@@ -260,16 +268,22 @@ app.get(
   "/study/:id/habitData",
   asyncHandler(async (req, res) => {
     const { id: studyId } = req.params;
-    const now = new Date();
-    const DBNow = now.setHours(now.getHours() - 9);
-    const oneWeekAgo = subDays(DBNow, 7);
+    const { timeZone } = req.query;
+
+    const timeZoneString = timeZone || "Asia/Seoul";
+    const now = DateTime.now().setZone(timeZoneString);
+    const startOfDay = now.startOf("day");
+    const UTCTime = startOfDay.toUTC();
+    const oneWeekAgo = UTCTime.minus({ days: 6 });
 
     const study = await prisma.study.findUniqueOrThrow({
       where: { id: studyId },
       include: {
         Habits: {
           include: {
-            HabitSuccessDates: { where: { createdAt: { gte: oneWeekAgo } } },
+            HabitSuccessDates: {
+              where: { createdAt: { gte: oneWeekAgo.toISO() } },
+            },
           },
         },
       },
@@ -278,9 +292,23 @@ app.get(
     const habits = study.Habits.map((item) => {
       const { id, name, deleted, HabitSuccessDates } = item;
       const success = HabitSuccessDates.map((date) => {
-        const successDay = moment(date.createdAt, "YYYY-MM-DDTHH:mm:ss.SSSZ");
-        const diff =
-          Math.floor(successDay.diff(DBNow) / (1000 * 60 * 60 * 24)) + 6;
+        const checkTimeZone = date.createdAt.getTimezoneOffset();
+
+        let timeZoneMilisec;
+        if (!(checkTimeZone !== 0)) {
+          timeZoneMilisec = date.createdAt.getTime();
+        } else {
+          const getNow = startOfDay.offset;
+
+          timeZoneMilisec = date.createdAt.getTime() + getNow * 60 * 1000;
+        }
+
+        const successDay = DateTime.fromMillis(UTCMilisec).toUTC();
+        const diffInDays = successDay.diff(
+          UTCTime,
+          "milliseconds"
+        ).milliseconds;
+        const diff = Math.floor(diffInDays / (1000 * 60 * 60 * 24)) + 6;
 
         return diff;
       });
