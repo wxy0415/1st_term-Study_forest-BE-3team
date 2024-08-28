@@ -1,5 +1,5 @@
-import { PrismaClient } from "@prisma/client";
-import { Studies, Emoji, Habits, HabitSuccessed } from "./mock.js";
+import { PrismaClient } from '@prisma/client';
+import { Studies, Emoji, Habits, HabitSuccessed } from './mock.js';
 
 const prisma = new PrismaClient();
 
@@ -10,7 +10,7 @@ async function main() {
   await prisma.habit.deleteMany();
   await prisma.habitSuccessDate.deleteMany();
 
-  // // 목 데이터 삽입
+  // 목 데이터 삽입
   await prisma.study.createMany({
     data: Studies,
     skipDuplicates: true,

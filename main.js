@@ -1,28 +1,38 @@
-import { PrismaClient } from '@prisma/client';
-import * as dotenv from 'dotenv';
+import { PrismaClient } from "@prisma/client";
+import * as dotenv from "dotenv";
 dotenv.config;
-import cors from 'cors';
-import express from 'express';
-import moment from 'moment';
-import { subDays } from 'date-fns';
-import asyncHandler from './src/utils/asyncErrorHandler.js';
-import { assert } from 'superstruct';
-import { CreateStudy, PatchStudy, Password } from './src/structs/study/Study.js';
-import { ValidationHabit } from './src/structs/habit/Habit.js';
-import { todayUCT, nextDayUCT } from './src/utils/timeRangeHandler.js';
+import cors from "cors";
+import express from "express";
+import asyncHandler from "./src/utils/asyncErrorHandler.js";
+import { assert } from "superstruct";
+import {
+  CreateStudy,
+  PatchStudy,
+  Password,
+} from "./src/structs/study/Study.js";
+import { ValidateEmojiCode } from "./src/structs/emoji/emoji.js";
+import { ValidateTimeZone } from "./src/structs/habit/Habit.js";
+import { ValidationHabit } from "./src/structs/habit/Habit.js";
+import { DateTime } from "luxon";
 
 const prisma = new PrismaClient();
 
-const app = new express();
+const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-const emojiFormat = { emoNum: true, count: true };
+function throwUnauthorized() {
+  const error = new Error("Unauthorized");
+  error.status = 401;
+  throw error;
+}
+
+const emojiFormat = { emojiCode: true, count: true };
 
 /** /study POST 스터디 생성 */
 app.post(
-  '/study',
+  "/study",
   asyncHandler(async (req, res) => {
     assert(req.body, CreateStudy);
     const study = await prisma.study.create({
@@ -44,36 +54,39 @@ app.post(
 
 /** /study GET 스터디 목록 조회 */
 app.get(
-  '/study',
+  "/study",
   asyncHandler(async (req, res) => {
-    const { page, pageSize, order = 'recent', keyWord = '' } = req.query;
+    const { page, pageSize, order = "recent", keyWord = "" } = req.query;
 
     let orderBy;
     switch (order) {
-      case 'mostPoint':
-        orderBy = { point: 'desc' };
+      case "mostPoint":
+        orderBy = { point: "desc" };
         break;
-      case 'leastPoint':
-        orderBy = { point: 'asc' };
+      case "leastPoint":
+        orderBy = { point: "asc" };
         break;
-      case 'oldest':
-        orderBy = { createdAt: 'asc' };
+      case "oldest":
+        orderBy = { createdAt: "asc" };
         break;
-      case 'recent':
+      case "recent":
       default:
-        orderBy = { createdAt: 'desc' };
+        orderBy = { createdAt: "desc" };
     }
 
     const pageNum = Number(page) || 1;
     const pageSizeNum = Number(pageSize) || 6;
     const skipInt = (pageNum - 1) * pageSizeNum;
 
-    const studys = await prisma.study.findMany({
+    const studies = await prisma.study.findMany({
       orderBy,
       skip: parseInt(skipInt),
       take: parseInt(pageSizeNum),
       where: {
-        OR: [{ studyName: { contains: keyWord } }, { description: { contains: keyWord } }],
+        OR: [
+          { studyName: { contains: keyWord } },
+          { description: { contains: keyWord } },
+        ],
       },
       select: {
         id: true,
@@ -86,13 +99,22 @@ app.get(
       },
     });
 
-    res.send(studys);
+    const totalCount = await prisma.study.count({
+      where: {
+        OR: [
+          { studyName: { contains: keyWord } },
+          { description: { contains: keyWord } },
+        ],
+      },
+    });
+
+    res.send({ totalCount, studies });
   })
 );
 
 /** /study/:id GET 스터디 상세 정보 */
 app.get(
-  '/study/:id',
+  "/study/:id",
   asyncHandler(async (req, res) => {
     const { id } = req.params;
     const study = await prisma.study.findUniqueOrThrow({
@@ -113,7 +135,7 @@ app.get(
 
 /** /study/:id PATCH 스터디 상세 수정 */
 app.patch(
-  '/study/:id',
+  "/study/:id",
   asyncHandler(async (req, res) => {
     const { id } = req.params;
     assert(req.body, PatchStudy);
@@ -138,7 +160,7 @@ app.patch(
 
 /** /study/:id DELETE 스터디 상세 삭제 */
 app.delete(
-  '/study/:id',
+  "/study/:id",
   asyncHandler(async (req, res) => {
     const { id } = req.params;
     const study = await prisma.study.delete({
@@ -151,7 +173,7 @@ app.delete(
 
 /** /study/:id/auth POST 비밀번호 일치 확인 */
 app.post(
-  '/study/:id/auth',
+  "/study/:id/auth",
   asyncHandler(async (req, res) => {
     const { id } = req.params;
     assert(req.body, Password);
@@ -173,7 +195,7 @@ app.post(
 
 /** /study/:id/habit POST 습관 생성 */
 app.post(
-  '/study/:id/habit',
+  "/study/:id/habit",
   asyncHandler(async (req, res) => {
     const { id } = req.params;
     assert(req.body, ValidationHabit);
@@ -197,16 +219,23 @@ app.post(
 
 /** /study/:id/habitList GET 습관 정보 리스트 조회 */
 app.get(
-  '/study/:id/habitList',
+  "/study/:id/habitList",
   asyncHandler(async (req, res) => {
     const { id } = req.params;
+    const { timeZone } = req.query;
+    const decodedTimeZone = decodeURIComponent(timeZone);
+    assert(decodedTimeZone, ValidateTimeZone);
+    // const timeZoneString = timeZone || "Asia/Seoul";
+    const now = DateTime.now().setZone(decodedTimeZone);
+    const startOfDay = now.startOf("day");
+    const UTCTime = startOfDay.toUTC();
 
     const habits = await prisma.habit.findMany({
       where: {
         studyId: id,
         deleted: false,
       },
-      orderBy: { createdAt: 'asc' },
+      orderBy: { createdAt: "asc" },
       select: {
         id: true,
         name: true,
@@ -216,8 +245,7 @@ app.get(
         HabitSuccessDates: {
           where: {
             createdAt: {
-              gte: todayUCT,
-              // lt: nextDayUCT,
+              gte: UTCTime.toISO(),
             },
           },
           select: {
@@ -240,19 +268,26 @@ app.get(
 
 /** /study/:id/habitData GET 습관 정보 조회(최근 일주일 성공 날짜 정보 포함) */
 app.get(
-  '/study/:id/habitData',
+  "/study/:id/habitData",
   asyncHandler(async (req, res) => {
     const { id: studyId } = req.params;
-    const now = new Date();
-    const DBNow = now.setHours(now.getHours() - 9);
-    const oneWeekAgo = subDays(DBNow, 7);
+    const { timeZone } = req.query;
+    const decodedTimeZone = decodeURIComponent(timeZone);
+    assert(decodedTimeZone, ValidateTimeZone);
+    // const timeZoneString = timeZone || "Asia/Seoul";
+    const now = DateTime.now().setZone(decodedTimeZone);
+    const startOfDay = now.startOf("day");
+    const UTCTime = startOfDay.toUTC();
+    const oneWeekAgo = UTCTime.minus({ days: 6 });
 
     const study = await prisma.study.findUniqueOrThrow({
       where: { id: studyId },
       include: {
         Habits: {
           include: {
-            HabitSuccessDates: { where: { createdAt: { gte: oneWeekAgo } } },
+            HabitSuccessDates: {
+              where: { createdAt: { gte: oneWeekAgo.toISO() } },
+            },
           },
         },
       },
@@ -261,8 +296,24 @@ app.get(
     const habits = study.Habits.map((item) => {
       const { id, name, deleted, HabitSuccessDates } = item;
       const success = HabitSuccessDates.map((date) => {
-        const successDay = moment(date.createdAt, 'YYYY-MM-DDTHH:mm:ss.SSSZ');
-        const diff = Math.floor(successDay.diff(DBNow) / (1000 * 60 * 60 * 24)) + 6;
+        const checkTimeZone = date.createdAt.getTimezoneOffset();
+
+        let timeZoneMilisec;
+
+        if (checkTimeZone !== 0) {
+          timeZoneMilisec = date.createdAt.getTime();
+        } else {
+          const getNow = startOfDay.offset;
+
+          timeZoneMilisec = date.createdAt.getTime() + getNow * 60 * 1000;
+        }
+
+        const successDay = DateTime.fromMillis(timeZoneMilisec).toUTC();
+        const diffInDays = successDay.diff(
+          UTCTime,
+          "milliseconds"
+        ).milliseconds;
+        const diff = Math.floor(diffInDays / (1000 * 60 * 60 * 24)) + 6;
 
         return diff;
       });
@@ -287,7 +338,7 @@ app.get(
 
 /** /habit/:id PACH 습관 이름 수정 */
 app.patch(
-  '/habit/:id',
+  "/habit/:id",
   asyncHandler(async (req, res) => {
     const { id } = req.params;
     assert(req.body, ValidationHabit);
@@ -309,7 +360,7 @@ app.patch(
 
 /** /habit/:id/delete PACH 습관 삭제 */
 app.patch(
-  '/habit/:id/delete',
+  "/habit/:id/delete",
   asyncHandler(async (req, res) => {
     const { id } = req.params;
 
@@ -325,7 +376,7 @@ app.patch(
 
 /** /habit/:id/success POST 완료한 습관 추가 */
 app.post(
-  '/habit/:id/success',
+  "/habit/:id/success",
   asyncHandler(async (req, res) => {
     const { id } = req.params;
 
@@ -344,7 +395,7 @@ app.post(
 
 /** /success/:id DELETE 완료된 습관 취소 */
 app.delete(
-  '/success/:id',
+  "/success/:id",
   asyncHandler(async (req, res) => {
     const { id } = req.params;
     const success = await prisma.habitSuccessDate.delete({
@@ -361,14 +412,14 @@ app.delete(
 
 /** /study/:id/emoji GET 응원 이모지 조회 */
 app.get(
-  '/study/:id/emoji',
+  "/study/:id/emoji",
   asyncHandler(async (req, res) => {
     const { id: studyId } = req.params;
 
     const study = await prisma.study.findUniqueOrThrow({
       where: { id: studyId },
       include: {
-        Emojis: { orderBy: { count: 'desc' }, select: emojiFormat },
+        Emojis: { orderBy: { count: "desc" }, select: emojiFormat },
       },
     });
 
@@ -381,18 +432,19 @@ app.get(
   })
 );
 
-/** /study/:id/emoji/:emojiNum  PUT 미정 응원 이모지 추가 */
+/** /study/:id/emoji/:emojiCode PUT 미정 응원 이모지 추가 */
 app.put(
-  '/study/:id/emoji/:emojiNum',
+  "/study/:id/emoji",
   asyncHandler(async (req, res) => {
-    const { id: studyId, emojiNum } = req.params;
-    const castedEmoNum = Number(emojiNum);
+    const { id: studyId } = req.params;
+    const { emojiCode } = req.body;
+    assert(req.body, ValidateEmojiCode);
     const emoji = await prisma.emoji.findFirst({
-      where: { studyId: studyId, emoNum: castedEmoNum },
+      where: { studyId: studyId, emojiCode: emojiCode },
     });
 
     if (!emoji) {
-      const data = { emoNum: castedEmoNum, count: 1, studyId: studyId };
+      const data = { emojiCode: emojiCode, count: 1, studyId: studyId };
       const result = await prisma.emoji.create({
         data: data,
         select: emojiFormat,
@@ -400,7 +452,7 @@ app.put(
       res.status(201).send(result);
       return;
     } else {
-      const data = { emoNum: castedEmoNum, count: Number(emoji.count) + 1 };
+      const data = { emojiCode: emojiCode, count: Number(emoji.count) + 1 };
       const result = await prisma.emoji.update({
         where: { id: emoji.id },
         data: data,
@@ -412,4 +464,4 @@ app.put(
   })
 );
 
-app.listen(process.env.PORT || 3000, () => console.log('Sever Started'));
+app.listen(process.env.PORT || 3000, () => console.log("Sever Started"));

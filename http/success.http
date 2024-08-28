@@ -1,4 +1,6 @@
-POST http://localhost:3000/habit/f7a6b2e3-8d4c-40ec-b5ac-a1dd9ed93e2/success
+###
+POST http://localhost:3000/habit/6e6a4837-0254-4ee1-8de2-300df2fb28ac/success
+
 
 ###
-DELETE http://localhost:3000/success/f7a6b2e3-8d4c-40ec-b5ac-a1dd9ed93e2
+DELETE http://localhost:3000/success/d154d046-25e7-487a-a756-a769621c3fb7

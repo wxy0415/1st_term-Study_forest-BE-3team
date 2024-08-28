@@ -1,10 +1,12 @@
-GET http://localhost:3000/study/g7h8i9j0-1234-1011-1213-141516171819/habitList
+###
+GET http://localhost:3000/study/afeac530-e924-4253-9666-c247f41725aa/habitList?timeZone=America%2FNew_York
+
 
 ### 
-GET http://localhost:3000/study/g7h8i9j0-1234-1011-1213-141516171819/habitData
+GET http://localhost:3000/study/afeac530-e924-4253-9666-c247f41725aa/habitData
 
 ###
-POST   http://localhost:3000/study/g7h8i9j0-1234-1011-1213-141516171819/habit
+POST   http://localhost:3000/study/afeac530-e924-4253-9666-c247f41725aa/habit
 Content-Type: application/json
 
 {
@@ -12,7 +14,7 @@ Content-Type: application/json
 }
 
 ### 이름 수정
-PATCH   http://localhost:3000/habit/h7a6b2e3-8d4c-40ec-b5ac-a1dd9ed93e2
+PATCH   http://localhost:3000/habit/eb6a5571-f1b7-4fcf-ac55-1f27d6dddd0d
 Content-Type: application/json
 
 {
@@ -20,4 +22,7 @@ Content-Type: application/json
 }
 
 ### 습관 삭제
-PATCH   http://localhost:3000/habit/h7a6b2e3-8d4c-40ec-b5ac-a1dd9ed93e2/delete
+PATCH   http://localhost:3000/habit/eb6a5571-f1b7-4fcf-ac55-1f27d6dddd0d/delete
+
+###
+GET https://onest-term-study-forest-be-3team-kjey.onrender.com/study/8523e4cc-0985-4c20-b8b2-2d86e4fe56d5/habitList

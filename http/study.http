@@ -46,7 +46,7 @@ GET https://onest-term-study-forest-be-3team-rovo.onrender.com/study?pageSize=24
 
 ###
 
-PATCH   http://onest-term-study-forest-be-3team-rovo.onrender.com/study/6026dc5d-5cd2-4239-b76d-f48db3e95c64
+PATCH   http://onest-term-study-forest-be-3team-rovo.onrender.com/study/51a4bc4c-2bb4-4ed8-8dc1-2efcd041588b
 Content-Type: application/json
 
 {
@@ -58,4 +58,4 @@ Content-Type: application/json
 
 ###
 
-DELETE http://onest-term-study-forest-be-3team-rovo.onrender.com/study/5d098d52-547d-4659-b8e5-58bd89fa0048
+DELETE http://onest-term-study-forest-be-3team-rovo.onrender.com/study/51a4bc4c-2bb4-4ed8-8dc1-2efcd041588b
