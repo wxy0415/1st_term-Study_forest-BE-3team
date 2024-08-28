@@ -4,7 +4,7 @@ GET  http://localhost:3000/study
 GET  http://localhost:3000/study?page=1&pageSize=6&order=recent&keyWord=
 
 ###
-GET  http://localhost:3000/study/adfc1706-a7f6-4c6e-a006-1733a854afbb
+GET  https://localhost:3000/study/ede81528-e6be-450c-9f30-ea4a97906300
 
 ###
 POST   http://localhost:3000/study
@@ -38,3 +38,24 @@ Content-Type: application/json
 {
     "password" : "222222fdgdf"
 }
+
+
+###
+
+GET https://onest-term-study-forest-be-3team-rovo.onrender.com/study?pageSize=24
+
+###
+
+PATCH   http://onest-term-study-forest-be-3team-rovo.onrender.com/study/6026dc5d-5cd2-4239-b76d-f48db3e95c64
+Content-Type: application/json
+
+{
+    "nickname": "이유디",
+    "studyName": "UX 스터디",
+    "description": "Steady And Slow Wins The Race!!",
+    "point": 310
+}
+
+###
+
+DELETE http://onest-term-study-forest-be-3team-rovo.onrender.com/study/5d098d52-547d-4659-b8e5-58bd89fa0048

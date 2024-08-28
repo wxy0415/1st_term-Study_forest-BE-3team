@@ -18,12 +18,6 @@ const app = new express();
 app.use(cors());
 app.use(express.json());
 
-function throwUnauthorized() {
-  const error = new Error('Unauthorized');
-  error.status = 401;
-  throw error;
-}
-
 const emojiFormat = { emoNum: true, count: true };
 
 /** /study POST 스터디 생성 */
